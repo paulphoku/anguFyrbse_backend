@@ -15,7 +15,7 @@ const app = express();
 const port = process.env.PORT || "8000";
 //middleware
 app.use(bodyParser.json()); //Accespt json params
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 /**
  *  App Configuration
  */
@@ -24,40 +24,39 @@ app.use(bodyParser.urlencoded({extended:true}));
  * Routes Definitions
  */
 app.post('/sendMessage/', (req, res, next) => {
-  //
-  var post_data = req.body; //get post params
+  //get post params
+  var post_data = req.body; 
   var fname = post_data.usr_fname;
   var lname = post_data.usr_lname;
   var tel = post_data.usr_tel;
 
-  
+
   // getting ready
   const twilioNumber = '+18573052371';
   const accountSid = 'ACb43150568429fac3440ea1cc0c177e9a';
-  const authToken = '6e98104af7b3596787c114be87e7bec0';
+  const authToken = 'b243e50ae301b54a411922e68059de2c';
   const client = Twilio(accountSid, authToken);
 
   // start sending message
-  // function sendText() {
-    const phoneNumbers = [tel]
+  const phoneNumbers = [tel]
 
-    phoneNumbers.map(phoneNumber => {
-      console.log(phoneNumber);
+  phoneNumbers.map(phoneNumber => {
+    console.log(phoneNumber);
 
-      if (!validE164(phoneNumber)) {
-        throw new Error('number must be E164 format!')
-      }
+    if (!validE164(phoneNumber)) {
+      throw new Error('number must be E164 format!')
+    }
 
-      const textContent = {
-        body: 'Hello ' + fname + ' ' + lname,
-        to: phoneNumber,
-        from: twilioNumber
-      }
+    const textContent = {
+      body: 'Hello ' + fname + ' ' + lname,
+      to: phoneNumber,
+      from: twilioNumber
+    }
 
-      client.messages.create(textContent)
-        .then((message) => console.log(message.to))
-    })
-  // }
+    client.messages.create(textContent)
+      .then((message) => console.log(message.to),res.json('sent'))
+  })
+
 
   // Validate E164 format
   function validE164(num) {
@@ -68,5 +67,5 @@ app.post('/sendMessage/', (req, res, next) => {
  * Server Activation
  */
 app.listen(port, () => {
-  console.log(`Listening to requests on http://localhost:${port}`);
-});
+  console.log(`Listening to requests on http://localhost:${port}`)
+})
