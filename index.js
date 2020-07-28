@@ -4,6 +4,7 @@
  * Required External Modules
  */
 const express = require("express");
+const cors = require('cors');
 const path = require("path");
 var bodyParser = require('body-parser');
 const Twilio = require("twilio");
@@ -14,6 +15,7 @@ const Twilio = require("twilio");
 const app = express();
 const port = process.env.PORT || "8000";
 //middleware
+app.use(cors());
 app.use(bodyParser.json()); //Accespt json params
 app.use(bodyParser.urlencoded({ extended: true }));
 /**
@@ -54,7 +56,7 @@ app.post('/sendMessage/', (req, res, next) => {
     }
 
     client.messages.create(textContent)
-      .then((message) => console.log(message.to),res.json('sent'))
+      .then((message) => console.log(message.to), res.json(200))
   })
 
 
