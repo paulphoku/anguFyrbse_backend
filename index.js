@@ -8,6 +8,14 @@ const cors = require('cors');
 const path = require("path");
 var bodyParser = require('body-parser');
 const Twilio = require("twilio");
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./angufyrbse-app-4e675-firebase-adminsdk-si52y-bdb276a1b0.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://angufyrbse-app-4e675.firebaseio.com"
+});
 
 /**
  * App Variables
@@ -65,6 +73,36 @@ app.post('/sendMessage/', (req, res, next) => {
     return /^\+?[1-9]\d{1,14}$/.test(num)
   }
 })
+
+//send Push notification
+app.post('/sendPush/', (req, res, next) => {
+   //get post params
+   var post_data = req.body; 
+   var user_token = post_data.user_token; 
+   var push_message = post_data.push_message;
+   var push_title = post_data.push_title;
+
+  const message = {
+    notification:{
+      title: push_title,
+      body: push_message
+    },
+    token: user_token
+  }
+  sendPushNotification(message);    
+})
+
+function sendPushNotification(message){
+
+  admin.messaging().send(message)
+  .then((response) => {
+    console.log('Successfully sent message: ', response);
+  })
+  .catch((error) => {
+    console.log('Error sending message: ', error);
+  })
+}
+
 /**
  * Server Activation
  */
