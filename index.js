@@ -89,19 +89,15 @@ app.post('/sendPush/', (req, res, next) => {
     },
     token: user_token
   }
-  sendPushNotification(message);    
-})
-
-function sendPushNotification(message){
-
   admin.messaging().send(message)
   .then((response) => {
     console.log('Successfully sent message: ', response);
+    res.json(200);
   })
   .catch((error) => {
     console.log('Error sending message: ', error);
-  })
-}
+  })   
+})
 
 /**
  * Server Activation
